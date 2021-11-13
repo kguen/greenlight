@@ -1,0 +1,20 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Go: Build And Run Debug Binary",
+      "type": "shell",
+      "command": "go build -o ./tmp/main -gcflags=\"all=-N -l\" ./cmd/api && ./tmp/main",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "showReuseMessage": false
+      }
+    }
+  ]
+}
