@@ -15,6 +15,24 @@
       "presentation": {
         "showReuseMessage": false
       }
+    },
+    {
+      "label": "Go: Apply Migrations",
+      "type": "shell",
+      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN up",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Go: Rollback All Migrations",
+      "type": "shell",
+      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN down",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
     }
   ]
 }
