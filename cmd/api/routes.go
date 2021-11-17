@@ -10,13 +10,18 @@ func (app *application) routes() *chi.Mux {
 	r.NotFound(app.notFoundResponse)
 	r.MethodNotAllowed(app.methodNotAllowedResponse)
 
+	r.Use(app.recoverPanic)
+
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/healthcheck", app.healthCheckHandler)
-		r.Get("/movies", app.listMoviesHandler)
-		r.Post("/movies", app.createMovieHandler)
-		r.Get("/movies/{id}", app.showMovieHandler)
-		r.Patch("/movies/{id}", app.updateMovieHandler)
-		r.Delete("/movies/{id}", app.deleteMovieHandler)
+
+		r.Route("/movies", func(r chi.Router) {
+			r.Get("/", app.listMoviesHandler)
+			r.Post("/", app.createMovieHandler)
+			r.Get("/{id}", app.showMovieHandler)
+			r.Patch("/{id}", app.updateMovieHandler)
+			r.Delete("/{id}", app.deleteMovieHandler)
+		})
 	})
 	return r
 }
