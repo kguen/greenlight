@@ -11,6 +11,7 @@ func (app *application) routes() *chi.Mux {
 	r.MethodNotAllowed(app.methodNotAllowedResponse)
 
 	r.Use(app.recoverPanic)
+	r.Use(app.rateLimit)
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/healthcheck", app.healthCheckHandler)
