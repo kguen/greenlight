@@ -17,7 +17,7 @@
       }
     },
     {
-      "label": "Go: Apply Migrations",
+      "label": "Go Migrate: Apply",
       "type": "shell",
       "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN up",
       "problemMatcher": [],
@@ -26,13 +26,43 @@
       }
     },
     {
-      "label": "Go: Rollback All Migrations",
+      "label": "Go Migrate: Migrate To Version",
+      "type": "shell",
+      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN goto ${input:gotoVersion}",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Go Migrate: Force Migration Version",
+      "type": "shell",
+      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN force ${input:migrationVersion}",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Go Migrate: Rollback All",
       "type": "shell",
       "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN down",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "forceVersion",
+      "type": "promptString",
+      "description": "Version to force?"
+    },
+    {
+      "id": "gotoVersion",
+      "type": "promptString",
+      "description": "Version to migrate to?"
     }
   ]
 }
