@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
 	"errors"
 	"time"
@@ -48,13 +49,13 @@ func ValidateEmail(v *validator.Validator, email string) {
 
 func ValidatePasswordPlaintext(v *validator.Validator, password string) {
 	v.Check(password != "", "password", "must be provided")
-	v.Check(len(password) >= 8, "password", "must be at least 8 characters long")
-	v.Check(len(password) <= 72, "password", "must not be more than 72 characters long")
+	v.Check(len(password) >= 8, "password", "must be at least 8 bytes long")
+	v.Check(len(password) <= 72, "password", "must not be more than 72 bytes long")
 }
 
 func ValidateUser(v *validator.Validator, user *User) {
 	v.Check(user.Name != "", "name", "must be provided")
-	v.Check(len(user.Name) <= 500, "name", "must not be more than 500 characters long")
+	v.Check(len(user.Name) <= 500, "name", "must not be more than 500 bytes long")
 
 	ValidateEmail(v, user.Email)
 
@@ -138,4 +139,30 @@ func (m UserModel) Update(user *User) error {
 		}
 	}
 	return nil
+}
+
+func (m UserModel) GetForToken(tokenScope, tokenPlaintext string) (*User, error) {
+	query := /* sql */ `
+		SELECT users.id, users.created_at, users.name, users.email, users.password_hash, users.activated, users.version
+		FROM users INNER JOIN tokens ON users.id = tokens.user_id
+		WHERE tokens.hash = $1 AND tokens.scope = $2 AND tokens.expiry > $3`
+
+	tokenHash := sha256.Sum256([]byte(tokenPlaintext))
+	args := []interface{}{tokenHash[:], tokenScope, time.Now()}
+
+	var user User
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&user.ID, &user.CreatedAt, &user.Name, &user.Email, &user.Password.hash, &user.Activated, &user.Version)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+	return &user, nil
 }

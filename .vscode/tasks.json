@@ -17,6 +17,15 @@
       }
     },
     {
+      "label": "Go Migrate: Create New Migration",
+      "type": "shell",
+      "command": "migrate create -seq -ext .sql -dir ./migrations ${input:migrationName}",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
       "label": "Go Migrate: Apply",
       "type": "shell",
       "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN up",
@@ -54,6 +63,11 @@
     }
   ],
   "inputs": [
+    {
+      "id": "migrationName",
+      "type": "promptString",
+      "description": "Name of new migration?"
+    },
     {
       "id": "forceVersion",
       "type": "promptString",

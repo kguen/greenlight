@@ -25,6 +25,7 @@ func (app *application) routes() *chi.Mux {
 		})
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/", app.registerUserHandler)
+			r.Put("/activated", app.activateUserHandler)
 		})
 	})
 	return r
