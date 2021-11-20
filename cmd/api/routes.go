@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -10,19 +12,27 @@ func (app *application) routes() *chi.Mux {
 	r.NotFound(app.notFoundResponse)
 	r.MethodNotAllowed(app.methodNotAllowedResponse)
 
-	r.Use(app.recoverPanic)
-	r.Use(app.rateLimit)
-	r.Use(app.authenticate)
+	r.Use(app.recoverPanic, app.rateLimit, app.authenticate)
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/healthcheck", app.healthCheckHandler)
 
 		r.Route("/movies", func(r chi.Router) {
-			r.Get("/", app.listMoviesHandler)
-			r.Post("/", app.createMovieHandler)
-			r.Get("/{id}", app.showMovieHandler)
-			r.Patch("/{id}", app.updateMovieHandler)
-			r.Delete("/{id}", app.deleteMovieHandler)
+			r.Group(func(r chi.Router) {
+				r.Use(func(next http.Handler) http.Handler {
+					return app.requirePermission("movies:read", next)
+				})
+				r.Get("/", app.listMoviesHandler)
+				r.Get("/{id}", app.showMovieHandler)
+			})
+			r.Group(func(r chi.Router) {
+				r.Use(func(next http.Handler) http.Handler {
+					return app.requirePermission("movies:write", next)
+				})
+				r.Post("/", app.createMovieHandler)
+				r.Patch("/{id}", app.updateMovieHandler)
+				r.Delete("/{id}", app.deleteMovieHandler)
+			})
 		})
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/", app.registerUserHandler)

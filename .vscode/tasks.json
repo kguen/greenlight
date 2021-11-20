@@ -46,7 +46,7 @@
     {
       "label": "Go Migrate: Force Migration Version",
       "type": "shell",
-      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN force ${input:migrationVersion}",
+      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN force ${input:forceVersion}",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
