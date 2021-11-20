@@ -12,6 +12,7 @@ func (app *application) routes() *chi.Mux {
 
 	r.Use(app.recoverPanic)
 	r.Use(app.rateLimit)
+	r.Use(app.authenticate)
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/healthcheck", app.healthCheckHandler)
@@ -27,6 +28,7 @@ func (app *application) routes() *chi.Mux {
 			r.Post("/", app.registerUserHandler)
 			r.Put("/activated", app.activateUserHandler)
 		})
+		r.Post("/tokens/authentication", app.createAuthenticationTokenHandler)
 	})
 	return r
 }
