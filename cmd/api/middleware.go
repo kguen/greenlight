@@ -26,6 +26,33 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 	})
 }
 
+func (app *application) enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Vary", "Access-Control-Allow-Origin")
+		w.Header().Add("Vary", "Access-Control-Request-Method")
+
+		origin := r.Header.Get("origin")
+		if origin != "" {
+			for i := range app.config.cors.trustedOrigins {
+				if origin == app.config.cors.trustedOrigins[i] {
+					w.Header().Set("Access-Control-Allow-Origin", origin)
+					// check if the request is a preflight request then return an OK response
+					if r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != "" {
+						// not necessary to include CORS-safe methods (HEAD, GET, POST) or CORS-safe headers
+						w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, PUT, PATCH")
+						w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+						w.WriteHeader(http.StatusOK)
+						return
+					}
+					break
+				}
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (app *application) rateLimit(next http.Handler) http.Handler {
 	type client struct {
 		limiter  *rate.Limiter

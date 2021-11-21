@@ -6,12 +6,21 @@
     {
       "label": "Go: Build And Run Debug Binary",
       "type": "shell",
-      "command": "go build -o ./tmp/main -gcflags='all=-N -l' ./cmd/api && ./tmp/main",
+      "command": "go build -o ./tmp/main -gcflags='all=-N -l' ./cmd/api && ./tmp/main -cors-trusted-origins='http://localhost:9000'",
       "problemMatcher": [],
       "group": {
         "kind": "build",
         "isDefault": true
       },
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Go: Run CORS Example",
+      "type": "shell",
+      "command": "go run ./cmd/examples/cors -request-type=${input:requestType}",
+      "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
@@ -77,6 +86,15 @@
       "id": "gotoVersion",
       "type": "promptString",
       "description": "Version to migrate to?"
+    },
+    {
+      "id": "requestType",
+      "type": "pickString",
+      "description": "CORS request type?",
+      "options": [
+        "simple",
+        "preflight"
+      ]
     }
   ]
 }
