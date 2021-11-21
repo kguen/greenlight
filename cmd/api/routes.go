@@ -1,6 +1,7 @@
 package main
 
 import (
+	"expvar"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -12,7 +13,7 @@ func (app *application) routes() *chi.Mux {
 	r.NotFound(app.notFoundResponse)
 	r.MethodNotAllowed(app.methodNotAllowedResponse)
 
-	r.Use(app.recoverPanic, app.enableCORS, app.rateLimit, app.authenticate)
+	r.Use(app.metrics, app.recoverPanic, app.enableCORS, app.rateLimit, app.authenticate)
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/healthcheck", app.healthCheckHandler)
@@ -40,5 +41,7 @@ func (app *application) routes() *chi.Mux {
 		})
 		r.Post("/tokens/authentication", app.createAuthenticationTokenHandler)
 	})
+	r.Get("/debug/vars", expvar.Handler().ServeHTTP)
+
 	return r
 }

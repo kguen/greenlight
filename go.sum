@@ -1,5 +1,7 @@
 github.com/alexedwards/argon2id v0.0.0-20210511081203-7d35d68092b8 h1:ZtMr6/tt7VU/Ijpyyedn7eUwwsNX1uskEcR+maLEF18=
 github.com/alexedwards/argon2id v0.0.0-20210511081203-7d35d68092b8/go.mod h1:Kmn5t2Rb93Q4NTprN4+CCgARGvigKMJyxP0WckpTUp0=
+github.com/felixge/httpsnoop v1.0.2 h1:+nS9g82KMXccJ/wp0zyRW9ZBHFETmMGtkk+2CTTrW4o=
+github.com/felixge/httpsnoop v1.0.2/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/go-chi/chi/v5 v5.0.5 h1:l3RJ8T8TAqLsXFfah+RA6N4pydMbPwSdvNM+AFWvLUM=
 github.com/go-chi/chi/v5 v5.0.5/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/go-mail/mail/v2 v2.3.0 h1:wha99yf2v3cpUzD1V9ujP404Jbw2uEvs+rBJybkdYcw=
