@@ -1,75 +1,98 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Go: Build And Run Debug Binary",
+      "label": "build/api",
+      "detail": "Go: Build Application",
       "type": "shell",
-      "command": "go build -o ./tmp/main -gcflags='all=-N -l' ./cmd/api && ./tmp/main -cors-trusted-origins='http://localhost:9000'",
+      "command": "make build/api",
       "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "presentation": {
         "showReuseMessage": false
       }
     },
     {
-      "label": "Go: Run CORS Example",
+      "label": "run/api",
+      "detail": "Go: Run Application",
       "type": "shell",
-      "command": "go run ./cmd/examples/cors -request-type=${input:requestType}",
-      "problemMatcher": [],
-      "presentation": {
-        "showReuseMessage": false
-      }
-    },
-    {
-      "label": "Go Migrate: Create New Migration",
-      "type": "shell",
-      "command": "migrate create -seq -ext .sql -dir ./migrations ${input:migrationName}",
+      "command": "make run/api",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
     },
     {
-      "label": "Go Migrate: Apply",
+      "label": "build/debug/api",
+      "detail": "Go: Build Application With Debug Info",
       "type": "shell",
-      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN up",
+      "command": "make build/debug/api",
+      "group": "build",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
     },
     {
-      "label": "Go Migrate: Migrate To Version",
+      "label": "run/examples/cors",
+      "detail": "Go: Run CORS Example",
       "type": "shell",
-      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN goto ${input:gotoVersion}",
+      "command": "make run/examples/cors request_type=${input:requestType}",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
     },
     {
-      "label": "Go Migrate: Force Migration Version",
+      "label": "db/migrations/new",
+      "detail": "Migrate: Create New Migration",
       "type": "shell",
-      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN force ${input:forceVersion}",
+      "command": "make db/migrations/new name=${input:migrationName}",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
     },
     {
-      "label": "Go Migrate: Rollback All",
+      "label": "db/migrations/up",
+      "detail": "Migrate: Apply",
       "type": "shell",
-      "command": "export $(cat .env | xargs) && migrate -path=./migrations -database=$GREENLIGHT_DB_DSN down",
+      "command": "make db/migrations/up",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false
       }
-    }
+    },
+    {
+      "label": "db/migrations/goto",
+      "detail": "Migrate: Migrate To Version",
+      "type": "shell",
+      "command": "make db/migrations/goto version=${input:version}",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "db/migrations/force",
+      "detail": "Migrate: Force Migration Version",
+      "type": "shell",
+      "command": "make db/migrations/force version=${input:version}",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "db/migrations/down",
+      "detail": "Migrate: Rollback All",
+      "type": "shell",
+      "command": "make db/migrations/down",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
   ],
   "inputs": [
     {
@@ -78,14 +101,9 @@
       "description": "Name of new migration?"
     },
     {
-      "id": "forceVersion",
+      "id": "version",
       "type": "promptString",
-      "description": "Version to force?"
-    },
-    {
-      "id": "gotoVersion",
-      "type": "promptString",
-      "description": "Version to migrate to?"
+      "description": "Version number?"
     },
     {
       "id": "requestType",

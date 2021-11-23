@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "exec",
+            "program": "${workspaceRoot}/bin/debug/api",
+            "args": [
+                "-cors-trusted-origins",
+                "http://localhost:9000",
+                "-db-dsn",
+                "postgres://username:password@localhost/db_name?sslmode=disable",
+                "-smtp-username",
+                "",
+                "-smtp-password",
+                ""
+            ],
+            "preLaunchTask": "build/debug/api",
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}

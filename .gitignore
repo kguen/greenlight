@@ -1,2 +1,6 @@
 /tmp
+/bin
+/vendor
+
 .env
+/.vscode/launch.json
