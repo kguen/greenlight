@@ -1,0 +1,4 @@
+68.183.185.70 {
+    respond /debug/* "Not permitted" 403
+    reverse_proxy localhost:4000
+}

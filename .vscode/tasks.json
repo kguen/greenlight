@@ -13,6 +13,17 @@
       }
     },
     {
+      "label": "build/prod/api",
+      "detail": "Go: Build Application For Production",
+      "type": "shell",
+      "command": "make build/prod/api",
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
       "label": "run/api",
       "detail": "Go: Run Application",
       "type": "shell",
@@ -88,6 +99,26 @@
       "detail": "Migrate: Rollback All",
       "type": "shell",
       "command": "make db/migrations/down",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "production/connect",
+      "detail": "Production: Connect To Server",
+      "type": "shell",
+      "command": "make production/connect",
+      "problemMatcher": [],
+      "presentation": {
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "production/deploy/api",
+      "detail": "Production: Deploy Application To Server",
+      "type": "shell",
+      "command": "make production/deploy/api",
       "problemMatcher": [],
       "presentation": {
         "showReuseMessage": false

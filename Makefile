@@ -33,7 +33,7 @@ build/api:
 .PHONY: build/prod/api
 build/prod/api: build/api
 	@echo 'Building cmd/api for production server...'
-	GOOS=linux GOARCH=amd64 go build -ldflags=${linker_flag} -o=./bin/linux_amd64/api ./cmd/api
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags=${linker_flag} -o=./bin/linux_amd64/api ./cmd/api
 
 ## build/debug/api: build the cmd/api application with debug infomation
 .PHONY: build/debug/api
@@ -117,3 +117,30 @@ tidy:
 	@echo 'Tidying and verifying module dependencies...'
 	go mod tidy
 	go mod verify
+
+# ==================================================================================== #
+# PRODUCTION
+# ==================================================================================== #
+
+production_host_ip = '68.183.185.70'
+
+## production/connect: connect to the production server
+.PHONY: production/connect
+production/connect:
+	ssh greenlight@${production_host_ip}
+
+## production/deploy/api: deploy the cmd/api application to the server
+.PHONY: prodction/deploy/api
+production/deploy/api:
+	rsync -P ./bin/linux_amd64/api greenlight@${production_host_ip}:~
+	rsync -rP --delete ./migrations greenlight@${production_host_ip}:~
+	rsync -P ./remote/production/api.service greenlight@${production_host_ip}:~
+	rsync -P ./remote/production/Caddyfile greenlight@${production_host_ip}:~
+	ssh -t greenlight@${production_host_ip} '\
+		migrate -path ~/migrations -database $$GREENLIGHT_DB_DSN up \
+		&& sudo mv ~/api.service /etc/systemd/system/ \
+		&& sudo systemctl enable api \
+		&& sudo systemctl restart api \
+		&& sudo mv ~/Caddyfile /etc/caddy/ \
+		&& sudo caddy fmt --overwrite /etc/caddy/Caddyfile \
+		&& sudo systemctl reload caddy'
